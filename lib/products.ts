@@ -22,10 +22,10 @@ export const products: Product[] = [
     condition: 'new',
     price: 249.99,
     originalPrice: 299.99,
-    // Use Unsplash image for deployed site
-    image: 'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=600&h=800&fit=crop&q=80&auto=format',
+    // Use uploaded Ineos Grenadiers image
+    image: '/images/products/1-1768933412769.png',
     images: [
-      'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=600&h=800&fit=crop&q=80&auto=format',
+      '/images/products/1-1768933412769.png',
       'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=800&fit=crop&q=80&auto=format'
     ],
     description: 'Authentic 2024 Ineos Grenadiers race jersey worn by the team. Premium materials with advanced moisture-wicking technology.',

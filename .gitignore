@@ -45,3 +45,5 @@ next-env.d.ts
 # Allow placeholder images
 !/public/images/products/jersey-placeholder.jpg
 !/public/images/products/bib-placeholder.jpg
+# Allow Ineos Grenadiers image
+!/public/images/products/1-1768933412769.png
