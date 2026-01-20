@@ -3,10 +3,84 @@ import "./globals.css";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import { RecentlyViewedProvider } from "@/contexts/RecentlyViewedContext";
 import LiveChat from "@/components/LiveChat";
+import StructuredData from "@/components/StructuredData";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peloton-archive.vercel.app';
 
 export const metadata: Metadata = {
-  title: "The Peloton Archive",
-  description: "Premium cycling kits and equipment",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "The Peloton Archive | Authentic Cycling Kits & Equipment",
+    template: "%s | The Peloton Archive"
+  },
+  description: "Shop authentic World Tour and Pro Tour cycling kits, jerseys, bibs, and equipment. Premium cycling gear from top teams like Ineos Grenadiers, Jumbo-Visma, UAE Team Emirates, and more. Rare collectibles and current season kits.",
+  keywords: [
+    "cycling kits",
+    "cycling jerseys",
+    "cycling bibs",
+    "world tour cycling",
+    "pro tour cycling",
+    "cycling equipment",
+    "authentic cycling gear",
+    "Ineos Grenadiers",
+    "Jumbo-Visma",
+    "UAE Team Emirates",
+    "cycling collectibles",
+    "cycling apparel",
+    "professional cycling",
+    "cycling merchandise"
+  ],
+  authors: [{ name: "The Peloton Archive" }],
+  creator: "The Peloton Archive",
+  publisher: "The Peloton Archive",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName: "The Peloton Archive",
+    title: "The Peloton Archive | Authentic Cycling Kits & Equipment",
+    description: "Shop authentic World Tour and Pro Tour cycling kits, jerseys, bibs, and equipment from top teams.",
+    images: [
+      {
+        url: `${siteUrl}/og-image.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "The Peloton Archive - Authentic Cycling Kits",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Peloton Archive | Authentic Cycling Kits & Equipment",
+    description: "Shop authentic World Tour and Pro Tour cycling kits, jerseys, bibs, and equipment from top teams.",
+    images: [`${siteUrl}/og-image.jpg`],
+    creator: "@pelotonarchive",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: siteUrl,
+  },
+  verification: {
+    // Add your verification codes here when you get them
+    // google: "your-google-verification-code",
+    // yandex: "your-yandex-verification-code",
+    // bing: "your-bing-verification-code",
+  },
 };
 
 export default function RootLayout({
@@ -16,6 +90,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <MetadataProvider />
+      </head>
       <body>
         <WishlistProvider>
           <RecentlyViewedProvider>

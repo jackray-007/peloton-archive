@@ -8,6 +8,7 @@ import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useRecentlyViewed } from '@/contexts/RecentlyViewedContext';
+import StructuredData from '@/components/StructuredData';
 
 export default function Home() {
   const featuredProducts = getFeaturedProducts();
@@ -15,6 +16,12 @@ export default function Home() {
 
   return (
     <>
+      <StructuredData
+        type="breadcrumb"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+        ]}
+      />
       <Navbar />
       <main>
         {/* Hero Section - Full screen, minimal, editorial */}
@@ -28,8 +35,8 @@ export default function Home() {
                 </h1>
               </div>
               <p className="text-lg sm:text-xl text-white/70 font-light tracking-tight max-w-2xl mb-12 leading-relaxed">
-                Authentic World Tour & Pro Tour cycling kits and equipment. 
-                Curated for the discerning cyclist.
+                Authentic cycling kits and equipment from the world's top teams. 
+                Rare collectibles and current season gear for the discerning cyclist.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
@@ -37,59 +44,84 @@ export default function Home() {
                   className="inline-flex items-center justify-center px-8 py-4 bg-white text-black hover:bg-white/90 font-light text-sm tracking-wider uppercase transition-all group"
                 >
                   Shop Collection
-                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" strokeWidth={1.5} />
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" strokeWidth={1.5} />
                 </Link>
                 <Link
-                  href="/about"
+                  href="/teams"
                   className="inline-flex items-center justify-center px-8 py-4 border border-white/20 text-white hover:border-white/40 font-light text-sm tracking-wider uppercase transition-all"
                 >
-                  Our Story
+                  Browse Teams
                 </Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Team Collections Preview */}
-        <section className="py-32 bg-white border-t border-black/5">
-          <div className="max-w-[1920px] mx-auto px-6 lg:px-12">
-            <div className="mb-20">
-              <div className="flex items-end justify-between mb-6">
-                <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tighter text-black">
-                  Teams
+        {/* Featured Products Section */}
+        {featuredProducts.length > 0 && (
+          <section className="py-20 bg-white">
+            <div className="max-w-[1920px] mx-auto px-6 lg:px-12">
+              <div className="mb-12">
+                <h2 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tighter text-black mb-4">
+                  Featured
                 </h2>
-                <Link
-                  href="/teams"
-                  className="text-xs text-black/60 hover:text-black font-light tracking-wider uppercase border-b border-black/20 hover:border-black/40 transition-colors pb-1"
-                >
-                  View All
-                </Link>
+                <p className="text-sm text-black/50 font-light tracking-tight max-w-2xl">
+                  Curated selection of premium cycling kits and equipment
+                </p>
               </div>
-              <p className="text-sm text-black/50 font-light tracking-tight max-w-2xl">
-                Explore collections from the world's most prestigious cycling teams.
-              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-12">
+                {featuredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
             </div>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 lg:gap-8">
-              {Array.from(new Set(products.map(p => p.team))).slice(0, 6).map((team) => {
-                const teamProduct = products.find(p => p.team === team);
+          </section>
+        )}
+
+        {/* Team Collections Preview */}
+        <section className="py-20 bg-white border-t border-black/5">
+          <div className="max-w-[1920px] mx-auto px-6 lg:px-12">
+            <div className="mb-12">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tighter text-black mb-4">
+                Team Collections
+              </h2>
+              <p className="text-sm text-black/50 font-light tracking-tight max-w-2xl mb-8">
+                Explore authentic kits from the world's premier cycling teams
+              </p>
+              <Link
+                href="/teams"
+                className="inline-flex items-center text-xs text-black/50 hover:text-black font-light tracking-wider uppercase border-b border-black/20 hover:border-black/40 transition-colors"
+              >
+                View All Teams
+                <ArrowRight className="w-3 h-3 ml-2" strokeWidth={1.5} />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+              {Array.from(new Set(products.map(p => p.team))).slice(0, 8).map((team) => {
+                const teamProducts = products.filter(p => p.team === team);
+                const featuredProduct = teamProducts[0];
                 return (
                   <Link
                     key={team}
                     href={`/teams/${team.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="group block"
+                    className="group"
                   >
                     <div className="relative aspect-square bg-gray-50 overflow-hidden mb-4">
-                      <Image
-                        src={teamProduct?.image || ''}
-                        alt={team}
-                        fill
-                        className="object-cover group-hover:scale-[1.02] transition-transform duration-500 ease-out"
-                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
-                      />
+                      {featuredProduct && (
+                        <Image
+                          src={featuredProduct.image}
+                          alt={`${team} collection`}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        />
+                      )}
                     </div>
-                    <p className="text-xs font-light text-black/70 group-hover:text-black transition-colors tracking-tight uppercase">
+                    <h3 className="text-sm font-light text-black tracking-tight group-hover:underline">
                       {team}
+                    </h3>
+                    <p className="text-xs text-black/50 font-light tracking-tight mt-1">
+                      {teamProducts.length} {teamProducts.length === 1 ? 'item' : 'items'}
                     </p>
                   </Link>
                 );
@@ -98,54 +130,23 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Featured Products - Editorial layout */}
-        <section className="py-32 bg-white">
-          <div className="max-w-[1920px] mx-auto px-6 lg:px-12">
-            <div className="mb-20">
-              <div className="flex items-end justify-between mb-6">
-                <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tighter text-black">
-                  Featured
+        {/* Recently Viewed */}
+        {recentlyViewed.length > 0 && (
+          <section className="py-20 bg-white border-t border-black/5">
+            <div className="max-w-[1920px] mx-auto px-6 lg:px-12">
+              <div className="mb-12">
+                <h2 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tighter text-black mb-4">
+                  Recently Viewed
                 </h2>
-                <Link
-                  href="/products"
-                  className="text-xs text-black/60 hover:text-black font-light tracking-wider uppercase border-b border-black/20 hover:border-black/40 transition-colors pb-1"
-                >
-                  View All
-                </Link>
               </div>
-              <p className="text-sm text-black/50 font-light tracking-tight max-w-2xl">
-                A curated selection of premium cycling kits from the world's most prestigious teams.
-              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-12">
+                {recentlyViewed.slice(0, 4).map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-12">
-              {featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Editorial Section - Minimal CTA */}
-        <section className="py-32 bg-black text-white">
-          <div className="max-w-[1920px] mx-auto px-6 lg:px-12">
-            <div className="max-w-4xl">
-              <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tighter mb-8 leading-tight">
-                Join the<br />Archive
-              </h2>
-              <p className="text-lg text-white/70 font-light tracking-tight max-w-2xl mb-12 leading-relaxed">
-                Connect with fellow cycling enthusiasts. Stay updated on new arrivals and exclusive collections.
-              </p>
-              <Link
-                href="/products"
-                className="inline-flex items-center justify-center px-8 py-4 border border-white/20 text-white hover:border-white/40 font-light text-sm tracking-wider uppercase transition-all group"
-              >
-                Explore Collection
-                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" strokeWidth={1.5} />
-              </Link>
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
       <Footer />
     </>
