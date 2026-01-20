@@ -8,9 +8,9 @@ const getImageUrl = (localPath?: string, fallback?: string) => {
   return fallback || 'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=600&h=800&fit=crop&q=80';
 };
 
-// Placeholder images for jerseys and bibs - using external URLs for Vercel deployment
-const JERSEY_PLACEHOLDER = 'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=600&h=800&fit=crop&q=80&auto=format';
-const BIB_PLACEHOLDER = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=800&fit=crop&q=80&auto=format';
+// Placeholder images for jerseys and bibs - using local uploaded images
+const JERSEY_PLACEHOLDER = '/images/products/jersey-placeholder.jpg';
+const BIB_PLACEHOLDER = '/images/products/bib-placeholder.jpg';
 
 export const products: Product[] = [
   {

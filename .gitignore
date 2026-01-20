@@ -42,3 +42,6 @@ next-env.d.ts
 /public/images/products/*.png
 /public/images/products/*.webp
 !/public/images/products/.gitkeep
+# Allow placeholder images
+!/public/images/products/jersey-placeholder.jpg
+!/public/images/products/bib-placeholder.jpg
