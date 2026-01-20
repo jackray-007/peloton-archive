@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import { products } from '@/lib/products';
 import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
@@ -8,7 +8,7 @@ import Footer from '@/components/Footer';
 import { Filter, X } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedTeam, setSelectedTeam] = useState<string>('all');
@@ -623,5 +623,25 @@ export default function ProductsPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <>
+        <Navbar />
+        <main className="pt-16">
+          <div className="min-h-screen bg-white flex items-center justify-center">
+            <div className="text-center">
+              <p className="text-sm text-black/50 font-light">Loading products...</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 }
