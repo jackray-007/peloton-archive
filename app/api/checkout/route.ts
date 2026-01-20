@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 
 export async function POST(request: NextRequest) {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return NextResponse.json(
+      { error: 'Stripe secret key is not configured' },
+      { status: 500 }
+    );
+  }
+
   try {
     const { items, metadata } = await request.json();
 
@@ -23,7 +28,11 @@ export async function POST(request: NextRequest) {
         product_data: {
           name: item.product.name,
           description: `${item.product.team} • ${item.product.year}`,
-          images: item.product.image ? [new URL(item.product.image, process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').href] : [],
+          images: item.product.image && item.product.image.startsWith('http') 
+            ? [item.product.image] 
+            : item.product.image 
+              ? [`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}${item.product.image}`]
+              : [],
         },
         unit_amount: Math.round(item.product.price * 100), // Convert to cents
       },
