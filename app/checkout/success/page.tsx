@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Check, ArrowRight, Package } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [orderDetails, setOrderDetails] = useState<any>(null);
@@ -112,6 +112,24 @@ export default function CheckoutSuccessPage() {
       </div>
       <Footer />
     </>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-white pt-20 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-sm text-black/50 font-light">Loading...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    }>
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }
 
