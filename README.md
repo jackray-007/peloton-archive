@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Peloton Archive
+
+A premium e-commerce website for reselling authentic World Tour and Pro Tour cycling kits and equipment to enthusiasts.
+
+## Features
+
+- **Premium Design**: Modern, high-converting UI with smooth animations and responsive design
+- **Product Catalog**: Browse cycling kits, jerseys, bibs, and equipment with advanced filtering
+- **Product Details**: Detailed product pages with image galleries and comprehensive information
+- **Shopping Cart**: Full cart functionality with quantity management
+- **Trust Signals**: Authenticity guarantees, shipping information, and customer testimonials
+- **Mobile Responsive**: Optimized for all device sizes
+
+## Tech Stack
+
+- **Next.js 16** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first CSS framework
+- **Lucide React** - Beautiful icon library
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Run the development server:
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+peloton-archive/
+├── app/                    # Next.js app directory
+│   ├── page.tsx           # Homepage
+│   ├── products/          # Product pages
+│   ├── cart/              # Shopping cart
+│   └── about/             # About page
+├── components/            # React components
+│   ├── Navbar.tsx
+│   ├── Footer.tsx
+│   └── ProductCard.tsx
+├── lib/                   # Utilities and data
+│   └── products.ts        # Product data
+└── types/                 # TypeScript types
+    └── index.ts
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Features in Detail
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Homepage
+- Hero section with compelling call-to-action
+- Trust signals (authenticity, shipping, quality)
+- Featured products showcase
+- Why choose us section
+- Newsletter signup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Product Catalog
+- Advanced filtering by category, team, and tour level
+- Responsive grid layout
+- Product cards with hover effects
+- Search functionality (ready for implementation)
 
-## Deploy on Vercel
+### Product Details
+- High-quality image gallery
+- Detailed product information
+- Condition and size details
+- Add to cart functionality
+- Trust signals and guarantees
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Shopping Cart
+- Add/remove items
+- Quantity management
+- Order summary with shipping calculation
+- Free shipping threshold ($200)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Customization
+
+### Adding Products
+
+Edit `lib/products.ts` to add new products. Each product should follow the `Product` interface defined in `types/index.ts`.
+
+### Styling
+
+The site uses Tailwind CSS. Customize colors and styles in:
+- `app/globals.css` - Global styles and CSS variables
+- Component files - Tailwind utility classes
+
+### Images
+
+Replace placeholder images with actual product photos. Update image paths in `lib/products.ts`.
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Import your repository in Vercel
+3. Deploy with one click
+
+### Other Platforms
+
+The site can be deployed to any platform that supports Next.js:
+- Netlify
+- AWS Amplify
+- Railway
+- Self-hosted with Node.js
+
+## Future Enhancements
+
+- [ ] User authentication and accounts
+- [ ] Payment integration (Stripe, PayPal)
+- [ ] Product reviews and ratings
+- [ ] Wishlist functionality
+- [ ] Advanced search
+- [ ] Email notifications
+- [ ] Admin dashboard
+- [ ] Inventory management
+- [ ] Order tracking
+
+## License
+
+Private project - All rights reserved
+
+## Contact
+
+For inquiries about The Peloton Archive, please contact through the website.
