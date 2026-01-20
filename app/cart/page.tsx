@@ -26,6 +26,7 @@ const mockCartItems = [
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState(mockCartItems);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { addToWishlist } = useWishlist();
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
@@ -49,6 +50,46 @@ export default function CartPage() {
   const saveForLater = (product: Product) => {
     addToWishlist(product);
     removeItem(product.id);
+  };
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return;
+
+    setIsProcessing(true);
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: cartItems,
+          metadata: {
+            // Add any additional metadata here
+          },
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        alert(`Error: ${data.error}`);
+        setIsProcessing(false);
+        return;
+      }
+
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Failed to create checkout session');
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('An error occurred. Please try again.');
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -163,8 +204,16 @@ export default function CartPage() {
                         <span>${total.toFixed(2)}</span>
                       </div>
                     </div>
-                    <button className="w-full py-4 bg-black text-white hover:bg-black/90 font-light text-sm tracking-wider uppercase transition-all mb-4">
-                      Proceed to Checkout
+                    <button
+                      onClick={handleCheckout}
+                      disabled={cartItems.length === 0}
+                      className={`w-full py-4 font-light text-sm tracking-wider uppercase transition-all mb-4 ${
+                        cartItems.length === 0
+                          ? 'bg-black/10 text-black/30 cursor-not-allowed'
+                          : 'bg-black text-white hover:bg-black/90'
+                      }`}
+                    >
+                      {isProcessing ? 'Processing...' : 'Proceed to Checkout'}
                     </button>
                     <Link
                       href="/products"
