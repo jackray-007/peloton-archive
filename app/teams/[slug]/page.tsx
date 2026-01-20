@@ -19,8 +19,9 @@ function getTeamNameFromSlug(slug: string): string | null {
   return team || null;
 }
 
-export default function TeamCollectionPage({ params }: { params: { slug: string } }) {
-  const teamName = getTeamNameFromSlug(params.slug);
+export default async function TeamCollectionPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const teamName = getTeamNameFromSlug(slug);
   
   if (!teamName) {
     return (

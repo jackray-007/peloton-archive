@@ -1,0 +1,3 @@
+cd /Users/Jack/Downloads/peloton-archive
+./setup-github.sh
+

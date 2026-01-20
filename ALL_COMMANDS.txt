@@ -1,0 +1,22 @@
+# Copy these commands one at a time into Terminal
+
+# Step 1: Navigate to project
+cd /Users/Jack/Downloads/peloton-archive
+
+# Step 2: Run setup script
+./setup-github.sh
+
+# OR if that doesn't work, use these manual commands (replace YOUR_USERNAME):
+
+# Step 1: Navigate
+cd /Users/Jack/Downloads/peloton-archive
+
+# Step 2: Add remote (replace YOUR_USERNAME)
+git remote add origin https://github.com/YOUR_USERNAME/peloton-archive.git
+
+# Step 3: Set branch
+git branch -M main
+
+# Step 4: Push
+git push -u origin main
+
