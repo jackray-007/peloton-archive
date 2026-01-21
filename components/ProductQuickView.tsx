@@ -156,3 +156,4 @@ export default function ProductQuickView({ product, isOpen, onClose }: ProductQu
   );
 }
 
+

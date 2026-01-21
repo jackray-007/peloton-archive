@@ -72,3 +72,4 @@ Your site automatically updates in 1-2 minutes!
 - **Analytics**: Free analytics included with Vercel
 - **Custom Domain**: Add your own domain in Vercel settings
 
+

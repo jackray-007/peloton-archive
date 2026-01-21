@@ -52,3 +52,4 @@
 - To track images in git, remove the ignore rules from `.gitignore`
 - For production, consider using cloud storage (AWS S3, Cloudinary, etc.)
 
+

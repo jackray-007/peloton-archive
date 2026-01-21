@@ -49,3 +49,4 @@ export default function ProductRecommendations({ currentProduct, limit = 4 }: Pr
   );
 }
 
+

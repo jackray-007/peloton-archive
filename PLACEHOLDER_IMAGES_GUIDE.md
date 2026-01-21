@@ -58,3 +58,4 @@ When you're ready to add real kit images:
 2. Update the product in `lib/products.ts` to use the new image path
 3. The placeholder system makes it easy to swap images later!
 
+

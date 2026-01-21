@@ -74,3 +74,4 @@ export default function EmailNotifications({ productId, productName, type = 'res
   );
 }
 
+

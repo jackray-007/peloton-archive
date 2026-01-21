@@ -52,3 +52,4 @@ In Vercel, click on **"Build Logs"** or **"40 lines"** to see the full error.
 
 **Just share the error and I'll fix it!**
 
+

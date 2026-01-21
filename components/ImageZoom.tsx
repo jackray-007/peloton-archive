@@ -47,3 +47,4 @@ export default function ImageZoom({ src, alt, className = '' }: ImageZoomProps) 
   );
 }
 
+

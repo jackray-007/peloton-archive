@@ -89,3 +89,4 @@ You can add products anywhere in the array, just make sure:
 - **Current products**: 12 products (IDs 1-12)
 - **Next available ID**: '13'
 
+

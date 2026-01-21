@@ -19,7 +19,11 @@ function getTeamNameFromSlug(slug: string): string | null {
   return team || null;
 }
 
-export default async function TeamCollectionPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function TeamCollectionPage({ 
+  params 
+}: { 
+  params: Promise<{ slug: string }> 
+}) {
   const { slug } = await params;
   const teamName = getTeamNameFromSlug(slug);
   
@@ -54,7 +58,6 @@ export default async function TeamCollectionPage({ params }: { params: Promise<{
       <main className="pt-16">
         <div className="min-h-screen bg-white">
           <div className="max-w-[1920px] mx-auto px-6 lg:px-12 py-20">
-            {/* Back Button */}
             <Link
               href="/teams"
               className="inline-flex items-center text-xs text-black/50 hover:text-black font-light tracking-wider uppercase mb-12 transition-colors group"
@@ -63,7 +66,6 @@ export default async function TeamCollectionPage({ params }: { params: Promise<{
               All Teams
             </Link>
 
-            {/* Team Header */}
             <div className="mb-20">
               <div className="flex items-center gap-3 mb-6">
                 {tour && (
@@ -80,7 +82,6 @@ export default async function TeamCollectionPage({ params }: { params: Promise<{
               </p>
             </div>
 
-            {/* Products Grid */}
             {teamProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-12">
                 {teamProducts.map((product) => (
