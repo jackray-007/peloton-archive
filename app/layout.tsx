@@ -90,10 +90,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <MetadataProvider />
-      </head>
       <body>
+        <MetadataProvider />
         <WishlistProvider>
           <RecentlyViewedProvider>
             {children}
