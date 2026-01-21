@@ -46,6 +46,8 @@ export default function ProductCard({ product }: ProductCardProps) {
               fill
               className="object-cover group-hover:scale-[1.02] transition-transform duration-500 ease-out"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              loading="lazy"
+              quality={85}
             />
             
             {/* Badges */}

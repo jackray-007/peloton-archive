@@ -40,6 +40,17 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Performance optimizations */
+img {
+  content-visibility: auto;
+}
+
+/* Reduce layout shift */
+.aspect-square,
+.aspect-\[3\/4\] {
+  contain: layout style paint;
+}
+
 /* Premium Typography */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
@@ -61,11 +72,18 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 0;
 }
 
-/* Smooth transitions */
+/* Smooth transitions - optimized for performance */
 * {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 200ms;
+}
+
+/* GPU acceleration for transforms */
+.group-hover\:scale-\[1\.02\],
+.group-hover\:scale-105 {
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* Premium utility classes */

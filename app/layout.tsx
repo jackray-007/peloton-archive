@@ -3,6 +3,7 @@ import "./globals.css";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import { RecentlyViewedProvider } from "@/contexts/RecentlyViewedContext";
 import LiveChat from "@/components/LiveChat";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peloton-archive.vercel.app';
 
@@ -89,13 +90,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <WishlistProvider>
-          <RecentlyViewedProvider>
-            {children}
-            <LiveChat />
-          </RecentlyViewedProvider>
-        </WishlistProvider>
+      <body className="antialiased">
+        <ErrorBoundary>
+          <WishlistProvider>
+            <RecentlyViewedProvider>
+              {children}
+              <LiveChat />
+            </RecentlyViewedProvider>
+          </WishlistProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

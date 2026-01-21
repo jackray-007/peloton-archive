@@ -19,7 +19,7 @@ export default function Home() {
       <main>
         {/* Hero Section - Full screen, minimal, editorial */}
         <section className="relative min-h-screen flex items-center justify-center bg-black text-white">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920')] bg-cover bg-center opacity-10"></div>
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920')] bg-cover bg-center opacity-10 bg-fixed"></div>
           <div className="relative max-w-[1920px] mx-auto px-6 lg:px-12 w-full">
             <div className="max-w-4xl">
               <div className="mb-8">
@@ -107,6 +107,8 @@ export default function Home() {
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          loading="lazy"
+                          quality={85}
                         />
                       )}
                     </div>

@@ -90,6 +90,7 @@ export default function ProductDetailPage() {
                     className="object-cover"
                     priority
                     sizes="(max-width: 1024px) 100vw, 50vw"
+                    quality={90}
                   />
                 </div>
                 {images.length > 1 && (
@@ -108,6 +109,8 @@ export default function ProductDetailPage() {
                           fill
                           className="object-cover"
                           sizes="(max-width: 1024px) 25vw, 12.5vw"
+                          loading="lazy"
+                          quality={75}
                         />
                       </button>
                     ))}
