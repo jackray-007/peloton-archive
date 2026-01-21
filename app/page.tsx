@@ -20,7 +20,7 @@ export default function Home() {
         {/* Hero Section - Full screen, minimal, editorial */}
         <section className="relative min-h-screen flex items-center justify-center bg-black text-white">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920')] bg-cover bg-center opacity-10 bg-fixed"></div>
-          <div className="relative max-w-[1920px] mx-auto px-6 lg:px-12 w-full">
+          <div className="relative max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 w-full">
             <div className="max-w-4xl">
               <div className="mb-8">
                 <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-light tracking-tighter mb-6 leading-[0.9]">
@@ -52,8 +52,8 @@ export default function Home() {
 
         {/* Featured Products Section */}
         {featuredProducts.length > 0 && (
-          <section className="py-20 bg-white">
-            <div className="max-w-[1920px] mx-auto px-6 lg:px-12">
+          <section className="py-12 sm:py-20 bg-white">
+            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12">
               <div className="mb-12">
                 <h2 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tighter text-black mb-4">
                   Featured
@@ -72,8 +72,8 @@ export default function Home() {
         )}
 
         {/* Team Collections Preview */}
-        <section className="py-20 bg-white border-t border-black/5">
-          <div className="max-w-[1920px] mx-auto px-6 lg:px-12">
+        <section className="py-12 sm:py-20 bg-white border-t border-black/5">
+          <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12">
             <div className="mb-12">
               <h2 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tighter text-black mb-4">
                 Team Collections
@@ -127,8 +127,8 @@ export default function Home() {
 
         {/* Recently Viewed */}
         {recentlyViewed.length > 0 && (
-          <section className="py-20 bg-white border-t border-black/5">
-            <div className="max-w-[1920px] mx-auto px-6 lg:px-12">
+          <section className="py-12 sm:py-20 bg-white border-t border-black/5">
+            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12">
               <div className="mb-12">
                 <h2 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tighter text-black mb-4">
                   Recently Viewed

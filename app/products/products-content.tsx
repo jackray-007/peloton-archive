@@ -95,7 +95,7 @@ export default function ProductsContent() {
       <Navbar />
       <main className="pt-16">
         <div className="min-h-screen bg-white">
-          <div className="max-w-[1920px] mx-auto px-6 lg:px-12 py-20">
+          <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 py-12 sm:py-20">
             {/* Header */}
             <div className="mb-16">
               <h1 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tighter text-black mb-4">
