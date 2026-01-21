@@ -8,7 +8,6 @@ import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useRecentlyViewed } from '@/contexts/RecentlyViewedContext';
-import StructuredData from '@/components/StructuredData';
 
 export default function Home() {
   const featuredProducts = getFeaturedProducts();
@@ -16,12 +15,6 @@ export default function Home() {
 
   return (
     <>
-      <StructuredData
-        type="breadcrumb"
-        breadcrumbs={[
-          { name: 'Home', url: '/' },
-        ]}
-      />
       <Navbar />
       <main>
         {/* Hero Section - Full screen, minimal, editorial */}

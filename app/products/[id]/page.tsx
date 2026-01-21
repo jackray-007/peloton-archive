@@ -16,7 +16,6 @@ import EmailNotifications from '@/components/EmailNotifications';
 import BundleDeal from '@/components/BundleDeal';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useRecentlyViewed } from '@/contexts/RecentlyViewedContext';
-import StructuredData from '@/components/StructuredData';
 
 export default function ProductDetailPage() {
   const params = useParams();

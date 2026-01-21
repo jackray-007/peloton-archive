@@ -3,7 +3,6 @@ import "./globals.css";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import { RecentlyViewedProvider } from "@/contexts/RecentlyViewedContext";
 import LiveChat from "@/components/LiveChat";
-import StructuredDataServer from "@/components/StructuredDataServer";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peloton-archive.vercel.app';
 
@@ -91,8 +90,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <StructuredDataServer type="organization" />
-        <StructuredDataServer type="website" />
         <WishlistProvider>
           <RecentlyViewedProvider>
             {children}
