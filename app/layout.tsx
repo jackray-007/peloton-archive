@@ -3,7 +3,7 @@ import "./globals.css";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import { RecentlyViewedProvider } from "@/contexts/RecentlyViewedContext";
 import LiveChat from "@/components/LiveChat";
-import MetadataProvider from "@/app/metadata-provider";
+import MetadataProvider from "./metadata-provider";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peloton-archive.vercel.app';
 
