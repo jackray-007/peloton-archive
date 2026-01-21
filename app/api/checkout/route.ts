@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
+// Lazy initialization - only create Stripe instance when needed
+function getStripe() {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey) {
+    throw new Error('Stripe secret key is not configured');
+  }
+  return new Stripe(secretKey);
+}
 
 export async function POST(request: NextRequest) {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    return NextResponse.json(
-      { error: 'Stripe secret key is not configured' },
-      { status: 500 }
-    );
-  }
-
   try {
+    const stripe = getStripe();
     const { items, metadata } = await request.json();
 
     if (!items || items.length === 0) {
