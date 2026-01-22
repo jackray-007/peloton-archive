@@ -77,11 +77,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: '/logos/PA (1).png', type: 'image/png', sizes: '32x32' },
       { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico', sizes: '16x16 32x32', type: 'image/x-icon' },
     ],
     apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/logos/PA (1).png', sizes: '180x180', type: 'image/png' },
     ],
   },
   verification: {

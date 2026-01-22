@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface WordmarkProps {
   className?: string;
@@ -6,16 +7,18 @@ interface WordmarkProps {
 }
 
 export default function Wordmark({ className = '', variant = 'dark' }: WordmarkProps) {
-  const textColor = variant === 'light' ? 'text-white' : 'text-black';
-  
+  // Using the actual wordmark image
   return (
-    <div className={`flex flex-col ${className}`}>
-      <span className={`text-sm font-bold tracking-tight uppercase leading-tight ${textColor}`}>
-        PELOTON
-      </span>
-      <span className={`text-sm font-bold tracking-tight uppercase leading-tight ${textColor}`}>
-        ARCHIVE
-      </span>
+    <div className={`relative ${className}`}>
+      <Image
+        src="/logos/PA (2000 x 800 px).png"
+        alt="Peloton Archive"
+        width={200}
+        height={80}
+        className={`object-contain ${variant === 'light' ? 'brightness-0 invert' : ''}`}
+        priority
+        style={{ height: 'auto', width: 'auto' }}
+      />
     </div>
   );
 }
