@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Instagram, Twitter, Facebook, Mail } from 'lucide-react';
 import NewsletterSignup from './NewsletterSignup';
+import Wordmark from './logos/Wordmark';
 
 export default function Footer() {
   return (
@@ -9,7 +10,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <h3 className="text-sm font-light text-white mb-6 tracking-wider uppercase">The Peloton Archive</h3>
+            <div className="mb-6">
+              <Wordmark variant="light" />
+            </div>
             <p className="text-sm text-white/50 font-light tracking-tight max-w-md leading-relaxed mb-8">
               Your premier destination for authentic World Tour and Pro Tour cycling kits and equipment. 
               Connecting enthusiasts with the gear of champions.

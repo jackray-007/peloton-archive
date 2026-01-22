@@ -8,6 +8,7 @@ import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useRecentlyViewed } from '@/contexts/RecentlyViewedContext';
+import ArchiveSeal from '@/components/logos/ArchiveSeal';
 
 export default function Home() {
   const featuredProducts = getFeaturedProducts();
@@ -31,6 +32,12 @@ export default function Home() {
                 Authentic cycling kits and equipment from the world's top teams. 
                 Rare collectibles and current season gear for the discerning cyclist.
               </p>
+              
+              {/* Archive Seal - Premium brand element, centered below text */}
+              <div className="mb-12 flex justify-center">
+                <ArchiveSeal serialNumber="001" size="large" />
+              </div>
+              
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/products"

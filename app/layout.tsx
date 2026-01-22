@@ -75,6 +75,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteUrl,
   },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: '16x16 32x32', type: 'image/x-icon' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   verification: {
     // Add your verification codes here when you get them
     // google: "your-google-verification-code",
@@ -90,6 +99,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      </head>
       <body className="antialiased">
         <ErrorBoundary>
           <WishlistProvider>

@@ -5,6 +5,8 @@ import { ShoppingCart, Search, Menu, X, Heart } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import SearchModal from './SearchModal';
 import { useWishlist } from '@/contexts/WishlistContext';
+import Wordmark from './logos/Wordmark';
+import BikeIcon from './logos/BikeIcon';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,11 +55,16 @@ export default function Navbar() {
     >
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12">
         <div className="flex justify-between items-center h-16">
-          {/* Logo - Left */}
+          {/* Logo - Left: Wordmark on desktop, Bike Icon on mobile */}
           <Link href="/" className="flex items-center group">
-            <span className="text-sm font-light text-black tracking-tight uppercase group-hover:opacity-70 transition-opacity">
-              The Peloton Archive
-            </span>
+            {/* Desktop: Full Wordmark */}
+            <div className="hidden md:block group-hover:opacity-70 transition-opacity">
+              <Wordmark variant="dark" />
+            </div>
+            {/* Mobile: Bike Icon only */}
+            <div className="md:hidden group-hover:opacity-70 transition-opacity">
+              <BikeIcon size={20} variant="dark" />
+            </div>
           </Link>
 
           {/* Desktop Navigation - Center */}
