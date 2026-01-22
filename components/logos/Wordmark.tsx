@@ -22,7 +22,7 @@ export default function Wordmark({
   const config = sizeConfig[size];
 
   return (
-    <div className={`relative inline-block ${className}`}>
+    <div className={`relative inline-block ${className}`} style={{ lineHeight: 0 }}>
       <Image
         src="/logos/PA (2000 x 800 px).png"
         alt="Peloton Archive"
@@ -34,7 +34,8 @@ export default function Wordmark({
           height: 'auto', 
           width: 'auto',
           maxWidth: `${config.width}px`,
-          maxHeight: `${config.height}px`
+          maxHeight: `${config.height}px`,
+          display: 'block'
         }}
       />
     </div>

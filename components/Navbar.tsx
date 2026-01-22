@@ -59,10 +59,10 @@ export default function Navbar() {
           <Link href="/" className="flex items-center group h-full py-2">
             {/* Desktop: Full Wordmark - compact for navbar */}
             <div className="hidden md:block group-hover:opacity-70 transition-opacity h-full flex items-center">
-              <Wordmark variant="dark" size="small" className="h-8" />
+              <Wordmark variant="dark" size="small" />
             </div>
             {/* Mobile: Bike Icon only */}
-            <div className="md:hidden group-hover:opacity-70 transition-opacity">
+            <div className="md:hidden group-hover:opacity-70 transition-opacity flex items-center">
               <BikeIcon size={24} variant="dark" />
             </div>
           </Link>

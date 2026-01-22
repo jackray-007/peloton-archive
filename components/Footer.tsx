@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <div className="mb-6">
+            <div className="mb-6 flex items-center">
               <Wordmark variant="light" size="medium" />
             </div>
             <p className="text-sm text-white/50 font-light tracking-tight max-w-md leading-relaxed mb-8">
