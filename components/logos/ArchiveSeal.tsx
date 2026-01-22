@@ -13,9 +13,9 @@ export default function ArchiveSeal({
   size = 'large'
 }: ArchiveSealProps) {
   const sizeClasses = {
-    small: 'w-32 h-32',
-    medium: 'w-48 h-48',
-    large: 'w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96'
+    small: 'w-40 h-40',
+    medium: 'w-56 h-56 md:w-64 md:h-64',
+    large: 'w-72 h-72 md:w-80 md:h-80'
   };
 
   // Using PA (2).png as Archive Seal (1563x1563, stamp-style)
@@ -26,9 +26,9 @@ export default function ArchiveSeal({
         alt={`Peloton Archive - Pro Team Issue No. ${serialNumber}`}
         width={1563}
         height={1563}
-        className="object-contain w-full h-full"
-        priority={size === 'large'}
-        quality={95}
+        className="object-contain w-full h-full drop-shadow-lg"
+        priority={size === 'large' || size === 'medium'}
+        quality={90}
       />
     </div>
   );

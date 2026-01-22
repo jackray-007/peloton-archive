@@ -11,7 +11,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <div className="mb-6">
-              <Wordmark variant="light" />
+              <Wordmark variant="light" size="medium" />
             </div>
             <p className="text-sm text-white/50 font-light tracking-tight max-w-md leading-relaxed mb-8">
               Your premier destination for authentic World Tour and Pro Tour cycling kits and equipment. 

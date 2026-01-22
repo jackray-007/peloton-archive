@@ -56,14 +56,14 @@ export default function Navbar() {
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12">
         <div className="flex justify-between items-center h-16">
           {/* Logo - Left: Wordmark on desktop, Bike Icon on mobile */}
-          <Link href="/" className="flex items-center group">
-            {/* Desktop: Full Wordmark */}
-            <div className="hidden md:block group-hover:opacity-70 transition-opacity">
-              <Wordmark variant="dark" />
+          <Link href="/" className="flex items-center group h-full py-2">
+            {/* Desktop: Full Wordmark - compact for navbar */}
+            <div className="hidden md:block group-hover:opacity-70 transition-opacity h-full flex items-center">
+              <Wordmark variant="dark" size="small" className="h-8" />
             </div>
             {/* Mobile: Bike Icon only */}
             <div className="md:hidden group-hover:opacity-70 transition-opacity">
-              <BikeIcon size={20} variant="dark" />
+              <BikeIcon size={24} variant="dark" />
             </div>
           </Link>
 

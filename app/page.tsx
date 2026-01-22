@@ -28,17 +28,12 @@ export default function Home() {
                   The Peloton<br />Archive
                 </h1>
               </div>
-              <p className="text-lg sm:text-xl text-white/70 font-light tracking-tight max-w-2xl mb-12 leading-relaxed">
+              <p className="text-lg sm:text-xl text-white/70 font-light tracking-tight max-w-2xl mb-16 leading-relaxed">
                 Authentic cycling kits and equipment from the world's top teams. 
                 Rare collectibles and current season gear for the discerning cyclist.
               </p>
               
-              {/* Archive Seal - Premium brand element, centered below text */}
-              <div className="mb-12 flex justify-center">
-                <ArchiveSeal serialNumber="001" size="large" />
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 mb-16">
                 <Link
                   href="/products"
                   className="inline-flex items-center justify-center px-8 py-4 bg-white text-black hover:bg-white/90 font-light text-sm tracking-wider uppercase transition-all group"
@@ -53,6 +48,20 @@ export default function Home() {
                   Browse Teams
                 </Link>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Archive Seal Section - Premium brand statement */}
+        <section className="py-20 sm:py-32 bg-white border-t border-black/5">
+          <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12">
+            <div className="flex flex-col items-center justify-center">
+              <div className="mb-8 text-center">
+                <p className="text-xs text-black/40 font-light tracking-wider uppercase mb-4">
+                  Authenticity Guaranteed
+                </p>
+              </div>
+              <ArchiveSeal serialNumber="001" size="medium" />
             </div>
           </div>
         </section>
