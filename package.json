@@ -2,6 +2,10 @@
   "name": "peloton-archive",
   "version": "0.1.0",
   "private": true,
+  "overrides": {
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,9 +14,8 @@
   },
   "dependencies": {
     "@stripe/stripe-js": "^8.6.3",
-    "@vercel/blob": "^2.0.1",
     "lucide-react": "^0.562.0",
-    "next": "15.2.6",
+    "next": "15.2.8",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "stripe": "^20.2.0"
