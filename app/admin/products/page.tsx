@@ -1,17 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, Edit, Trash2, X, Save, Lock, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { products } from '@/lib/products';
 import { Product } from '@/types';
+
+const getAdminHeaders = () => ({
+  'x-admin-password': process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin',
+  'Content-Type': 'application/json',
+});
 
 export default function ProductsAdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Product>>({
@@ -31,12 +38,30 @@ export default function ProductsAdminPage() {
     tour: 'world-tour',
   });
 
+  const loadProducts = useCallback(async () => {
+    try {
+      const res = await fetch('/api/products');
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(Array.isArray(data) ? data : []);
+      }
+    } catch {
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     const authStatus = sessionStorage.getItem('admin_authenticated');
     if (authStatus === 'true') {
       setAuthenticated(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (authenticated) loadProducts();
+  }, [authenticated, loadProducts]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,37 +125,68 @@ export default function ProductsAdminPage() {
     setIsAdding(false);
   };
 
-  const handleSave = () => {
-    // In a real app, this would save to a database
-    // For now, we'll show instructions to update lib/products.ts
-    const productCode = generateProductCode(formData, editingId || 'new');
-    navigator.clipboard.writeText(productCode);
-    alert('Product code copied to clipboard! Paste it into lib/products.ts');
-    resetForm();
+  const handleSave = async () => {
+    if (!formData.name || typeof formData.price !== 'number') {
+      alert('Please fill in at least Name and Price.');
+      return;
+    }
+    setSaving(true);
+    try {
+      const product: Product = {
+        id: editingId || String(Date.now()),
+        name: formData.name!,
+        team: formData.team!,
+        category: formData.category!,
+        year: formData.year!,
+        condition: formData.condition!,
+        price: formData.price,
+        originalPrice: formData.originalPrice,
+        image: formData.image || '/images/products/jersey-placeholder.jpg',
+        images: formData.images?.length ? formData.images : [formData.image || '/images/products/jersey-placeholder.jpg'],
+        description: formData.description || '',
+        size: formData.size || 'M',
+        inStock: formData.inStock ?? true,
+        featured: formData.featured ?? false,
+        tour: formData.tour || 'world-tour',
+      };
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: getAdminHeaders(),
+        body: JSON.stringify({ product }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to save');
+      }
+      const updated = await res.json();
+      setProducts(Array.isArray(updated) ? updated : [...products, product]);
+      resetForm();
+      alert('Product saved. It will appear on the site right away.');
+    } catch (e: unknown) {
+      alert(e instanceof Error ? e.message : 'Failed to save product.');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const generateProductCode = (data: Partial<Product>, id: string) => {
-    const newId = editingId || `'${Date.now()}'`;
-    const imagesArray = data.images && data.images.length > 0
-      ? `['${data.images.join("', '")}']`
-      : `['${data.image}']`;
-    
-    return `{
-    id: ${newId},
-    name: '${data.name}',
-    team: '${data.team}',
-    category: '${data.category}',
-    year: ${data.year},
-    condition: '${data.condition}',
-    price: ${data.price},${data.originalPrice ? `\n    originalPrice: ${data.originalPrice},` : ''}
-    image: '${data.image}',
-    images: ${imagesArray},
-    description: '${data.description?.replace(/'/g, "\\'")}',
-    size: '${data.size}',
-    inStock: ${data.inStock},
-    featured: ${data.featured},
-    tour: '${data.tour}',
-  },`;
+  const handleDelete = async (id: string) => {
+    if (!confirm('Remove this product from the site?')) return;
+    setSaving(true);
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: getAdminHeaders(),
+        body: JSON.stringify({ delete: true, id }),
+      });
+      if (!res.ok) throw new Error('Failed to delete');
+      const updated = await res.json();
+      setProducts(Array.isArray(updated) ? updated : products.filter((p) => p.id !== id));
+      resetForm();
+    } catch {
+      alert('Failed to delete product.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (!authenticated) {
@@ -457,10 +513,11 @@ export default function ProductsAdminPage() {
                   <div className="flex items-center gap-4 mt-6">
                     <button
                       onClick={handleSave}
-                      className="inline-flex items-center px-6 py-3 bg-black text-white hover:bg-black/90 font-light text-sm tracking-wider uppercase transition-all"
+                      disabled={saving}
+                      className="inline-flex items-center px-6 py-3 bg-black text-white hover:bg-black/90 font-light text-sm tracking-wider uppercase transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Save className="w-4 h-4 mr-2" strokeWidth={1.5} />
-                      {editingId ? 'Update Product' : 'Generate Code'}
+                      {saving ? 'Saving...' : editingId ? 'Update Product' : 'Add Product'}
                     </button>
                     <button
                       onClick={resetForm}
@@ -477,42 +534,54 @@ export default function ProductsAdminPage() {
                 <h2 className="text-xs font-light text-black/60 tracking-wider uppercase mb-6">
                   All Products ({products.length})
                 </h2>
-                {products.map((product) => (
-                  <div
-                    key={product.id}
-                    className="border border-black/10 p-6 hover:border-black/20 transition-colors"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-sm font-light text-black tracking-tight">
-                            {product.name}
-                          </h3>
-                          {product.featured && (
-                            <span className="text-[10px] text-black/40 font-light tracking-wider uppercase border border-black/10 px-2 py-0.5">
-                              Featured
-                            </span>
-                          )}
+                {loading ? (
+                  <p className="text-sm font-light text-black/50">Loading products...</p>
+                ) : (
+                  products.map((product) => (
+                    <div
+                      key={product.id}
+                      className="border border-black/10 p-6 hover:border-black/20 transition-colors"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-sm font-light text-black tracking-tight">
+                              {product.name}
+                            </h3>
+                            {product.featured && (
+                              <span className="text-[10px] text-black/40 font-light tracking-wider uppercase border border-black/10 px-2 py-0.5">
+                                Featured
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs font-light text-black/50 tracking-tight mb-2">
+                            {product.team} • {product.year} • {product.category}
+                          </p>
+                          <p className="text-xs font-light text-black/60 tracking-tight">
+                            ${product.price} {product.originalPrice && `(was $${product.originalPrice})`} • {product.condition} • {product.inStock ? 'In Stock' : 'Out of Stock'}
+                          </p>
                         </div>
-                        <p className="text-xs font-light text-black/50 tracking-tight mb-2">
-                          {product.team} • {product.year} • {product.category}
-                        </p>
-                        <p className="text-xs font-light text-black/60 tracking-tight">
-                          ${product.price} {product.originalPrice && `(was $${product.originalPrice})`} • {product.condition} • {product.inStock ? 'In Stock' : 'Out of Stock'}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleEdit(product)}
-                          className="p-2 text-black/40 hover:text-black transition-colors"
-                          title="Edit"
-                        >
-                          <Edit className="w-4 h-4" strokeWidth={1.5} />
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleEdit(product)}
+                            className="p-2 text-black/40 hover:text-black transition-colors"
+                            title="Edit"
+                          >
+                            <Edit className="w-4 h-4" strokeWidth={1.5} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(product.id)}
+                            disabled={saving}
+                            className="p-2 text-black/40 hover:text-red-600 transition-colors"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" strokeWidth={1.5} />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>

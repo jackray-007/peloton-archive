@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { put } from '@vercel/blob';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
@@ -7,7 +8,8 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const productId = formData.get('productId') as string;
+    const productId = (formData.get('productId') as string) || '';
+    const imageIndex = formData.get('imageIndex');
 
     if (!file) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
@@ -15,35 +17,39 @@ export async function POST(request: NextRequest) {
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    const extension = file.name.split('.').pop() || 'jpg';
+    const timestamp = Date.now();
+    const filename = productId
+      ? imageIndex
+        ? `${productId}-${imageIndex}-${timestamp}.${extension}`
+        : `${productId}-${timestamp}.${extension}`
+      : `upload-${timestamp}.${extension}`;
 
-    // Create images directory if it doesn't exist
+    // Prefer Vercel Blob (works in production; persists across deploys)
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const blob = await put(`peloton-archive/images/${filename}`, buffer, {
+        access: 'public',
+        contentType: file.type || `image/${extension}`,
+      });
+      return NextResponse.json({
+        success: true,
+        url: blob.url,
+        filename: blob.pathname || filename,
+      });
+    }
+
+    // Fallback: write to public folder (works locally only)
     const imagesDir = join(process.cwd(), 'public', 'images', 'products');
     if (!existsSync(imagesDir)) {
       await mkdir(imagesDir, { recursive: true });
     }
-
-    // Generate filename
-    const timestamp = Date.now();
-    const extension = file.name.split('.').pop();
-    const imageIndex = formData.get('imageIndex');
-    const filename = productId 
-      ? imageIndex 
-        ? `${productId}-${imageIndex}-${timestamp}.${extension}`
-        : `${productId}-${timestamp}.${extension}`
-      : `upload-${timestamp}.${extension}`;
-    
     const filepath = join(imagesDir, filename);
-
-    // Write file
     await writeFile(filepath, buffer);
-
-    // Return the public URL
     const publicUrl = `/images/products/${filename}`;
-
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       url: publicUrl,
-      filename: filename 
+      filename,
     });
   } catch (error) {
     console.error('Upload error:', error);
@@ -53,4 +59,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

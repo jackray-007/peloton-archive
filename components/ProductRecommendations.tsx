@@ -7,21 +7,20 @@ import ProductCard from './ProductCard';
 
 interface ProductRecommendationsProps {
   currentProduct: Product;
+  allProducts?: Product[];
   limit?: number;
 }
 
-export default function ProductRecommendations({ currentProduct, limit = 4 }: ProductRecommendationsProps) {
+export default function ProductRecommendations({ currentProduct, allProducts, limit = 4 }: ProductRecommendationsProps) {
+  const list = allProducts ?? products;
   const recommendations = useMemo(() => {
-    // Get products from same team
-    const sameTeam = products.filter(p => p.team === currentProduct.team && p.id !== currentProduct.id);
+    const sameTeam = list.filter(p => p.team === currentProduct.team && p.id !== currentProduct.id);
     
     // Get products from same category
-    const sameCategory = products.filter(
+    const sameCategory = list.filter(
       p => p.category === currentProduct.category && p.id !== currentProduct.id && p.team !== currentProduct.team
     );
-    
-    // Get products from same tour level
-    const sameTour = products.filter(
+    const sameTour = list.filter(
       p => p.tour === currentProduct.tour && p.id !== currentProduct.id && 
       p.team !== currentProduct.team && p.category !== currentProduct.category
     );
@@ -31,7 +30,7 @@ export default function ProductRecommendations({ currentProduct, limit = 4 }: Pr
     const unique = Array.from(new Map(all.map(p => [p.id, p])).values());
     
     return unique.slice(0, limit);
-  }, [currentProduct, limit]);
+  }, [currentProduct, list, limit]);
 
   if (recommendations.length === 0) return null;
 

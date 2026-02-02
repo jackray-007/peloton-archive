@@ -1,9 +1,9 @@
 import { Metadata } from 'next';
-import { products, getProductsByTeam } from '@/lib/products';
+import { getProducts, getProductsByTeam } from '@/lib/products';
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peloton-archive.vercel.app';
 
-function getTeamNameFromSlug(slug: string): string | null {
+function getTeamNameFromSlug(slug: string, products: Awaited<ReturnType<typeof getProducts>>): string | null {
   const teams = Array.from(new Set(products.map(p => p.team)));
   const team = teams.find(t => t.toLowerCase().replace(/\s+/g, '-') === slug);
   return team || null;
@@ -15,7 +15,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const teamName = getTeamNameFromSlug(slug);
+  const products = await getProducts();
+  const teamName = getTeamNameFromSlug(slug, products);
 
   if (!teamName) {
     return {
@@ -24,7 +25,7 @@ export async function generateMetadata({
     };
   }
 
-  const teamProducts = getProductsByTeam(teamName);
+  const teamProducts = getProductsByTeam(teamName, products);
   const featuredProduct = teamProducts[0];
   const tour = featuredProduct?.tour;
   const tourType = tour === 'world-tour' ? 'World Tour' : tour === 'pro-tour' ? 'Pro Tour' : '';

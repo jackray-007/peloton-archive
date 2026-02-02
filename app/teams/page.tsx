@@ -1,14 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { products } from '@/lib/products';
+import { getProducts } from '@/lib/products';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ArrowRight } from 'lucide-react';
 
-// Get unique teams with their product counts and featured image
-function getTeamCollections() {
-  const teamsMap = new Map();
-  
+function getTeamCollections(products: Awaited<ReturnType<typeof getProducts>>) {
+  const teamsMap = new Map<string, { name: string; count: number; featuredImage: string; tour?: string }>();
   products.forEach(product => {
     if (!teamsMap.has(product.team)) {
       teamsMap.set(product.team, {
@@ -25,8 +23,9 @@ function getTeamCollections() {
   return Array.from(teamsMap.values()).sort((a, b) => b.count - a.count);
 }
 
-export default function TeamsPage() {
-  const teams = getTeamCollections();
+export default async function TeamsPage() {
+  const products = await getProducts();
+  const teams = getTeamCollections(products);
 
   return (
     <>

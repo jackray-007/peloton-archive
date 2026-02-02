@@ -1,19 +1,19 @@
 import Link from 'next/link';
-import { products, getProductsByTeam } from '@/lib/products';
+import { getProducts, getProductsByTeam } from '@/lib/products';
 import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ArrowLeft } from 'lucide-react';
 
-// Generate static paths for all teams
 export async function generateStaticParams() {
+  const products = await getProducts();
   const teams = Array.from(new Set(products.map(p => p.team)));
   return teams.map(team => ({
     slug: team.toLowerCase().replace(/\s+/g, '-'),
   }));
 }
 
-function getTeamNameFromSlug(slug: string): string | null {
+function getTeamNameFromSlug(slug: string, products: Awaited<ReturnType<typeof getProducts>>): string | null {
   const teams = Array.from(new Set(products.map(p => p.team)));
   const team = teams.find(t => t.toLowerCase().replace(/\s+/g, '-') === slug);
   return team || null;
@@ -25,7 +25,8 @@ export default async function TeamCollectionPage({
   params: Promise<{ slug: string }> 
 }) {
   const { slug } = await params;
-  const teamName = getTeamNameFromSlug(slug);
+  const products = await getProducts();
+  const teamName = getTeamNameFromSlug(slug, products);
   
   if (!teamName) {
     return (
@@ -48,7 +49,7 @@ export default async function TeamCollectionPage({
     );
   }
 
-  const teamProducts = getProductsByTeam(teamName);
+  const teamProducts = getProductsByTeam(teamName, products);
   const featuredProduct = teamProducts[0];
   const tour = featuredProduct?.tour;
 

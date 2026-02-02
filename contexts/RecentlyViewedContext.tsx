@@ -18,14 +18,15 @@ export function RecentlyViewedProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem('recentlyViewed');
     if (saved) {
       try {
-        const productIds = JSON.parse(saved);
+        const productIds = JSON.parse(saved) as string[];
         if (productIds.length > 0) {
-          import('@/lib/products').then(({ products }) => {
-            const viewed = productIds.map((id: string) => products.find((p: Product) => p.id === id)).filter(Boolean);
-            if (viewed.length > 0) {
-              setRecentlyViewed(viewed);
-            }
-          });
+          fetch('/api/products')
+            .then((res) => (res.ok ? res.json() : []))
+            .then((products: Product[]) => {
+              const viewed = productIds.map((id) => products.find((p) => p.id === id)).filter(Boolean) as Product[];
+              if (viewed.length > 0) setRecentlyViewed(viewed);
+            })
+            .catch(() => {});
         }
       } catch (e) {
         console.error('Error loading recently viewed:', e);

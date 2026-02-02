@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Upload, X, Check, Image as ImageIcon, Lock, Search, Copy, Trash2, Link as LinkIcon, Grid, List } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { products } from '@/lib/products';
+import { Product } from '@/types';
 
 export default function ImagesAdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -19,37 +19,39 @@ export default function ImagesAdminPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set());
   const [assigningToProduct, setAssigningToProduct] = useState<string | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const authStatus = sessionStorage.getItem('admin_authenticated');
-    if (authStatus === 'true') {
-      setAuthenticated(true);
-      loadUploadedImages();
-    }
+    if (authStatus === 'true') setAuthenticated(true);
   }, []);
 
-  const loadUploadedImages = async () => {
-    // In a real app, this would fetch from an API
-    // For now, we'll scan the products to find uploaded images
+  useEffect(() => {
+    if (!authenticated) return;
+    fetch('/api/products')
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => setProducts(Array.isArray(data) ? data : []))
+      .catch(() => setProducts([]));
+  }, [authenticated]);
+
+  useEffect(() => {
     const imageUrls: Array<{ url: string; filename: string; productId?: string }> = [];
-    
-    products.forEach(product => {
-      if (product.image && product.image.startsWith('/images/products/')) {
-        const filename = product.image.split('/').pop() || '';
+    products.forEach((product) => {
+      if (product.image && (product.image.startsWith('/images/products/') || product.image.startsWith('http'))) {
+        const filename = product.image.split('/').pop() || product.image.slice(-20);
         imageUrls.push({ url: product.image, filename, productId: product.id });
       }
       if (product.images) {
-        product.images.forEach(img => {
-          if (img.startsWith('/images/products/')) {
-            const filename = img.split('/').pop() || '';
+        product.images.forEach((img) => {
+          if (img.startsWith('/images/products/') || img.startsWith('http')) {
+            const filename = img.split('/').pop() || img.slice(-20);
             imageUrls.push({ url: img, filename, productId: product.id });
           }
         });
       }
     });
-    
     setUploadedImages(imageUrls);
-  };
+  }, [products]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +61,6 @@ export default function ImagesAdminPage() {
       setAuthenticated(true);
       sessionStorage.setItem('admin_authenticated', 'true');
       setPasswordError('');
-      loadUploadedImages();
     } else {
       setPasswordError('Incorrect password');
     }
@@ -135,17 +136,32 @@ export default function ImagesAdminPage() {
     setAssigningToProduct(imageUrl);
   };
 
-  const handleProductAssignment = (productId: string, imageUrl: string) => {
-    const product = products.find(p => p.id === productId);
-    if (product) {
-      const code = `// Update product ${productId} (${product.name})
-image: getImageUrl('${imageUrl}', '${product.image}'),
-images: [
-  getImageUrl('${imageUrl}', '${product.image}'),
-  ...${product.images ? JSON.stringify(product.images) : '[]'}
-],`;
-      navigator.clipboard.writeText(code);
-      alert(`Code copied! Update product ${productId} in lib/products.ts`);
+  const handleProductAssignment = async (productId: string, imageUrl: string) => {
+    const product = products.find((p) => p.id === productId);
+    if (!product) {
+      setAssigningToProduct(null);
+      return;
+    }
+    const updated = {
+      ...product,
+      image: imageUrl,
+      images: [imageUrl, ...(product.images?.filter((u) => u !== imageUrl) || [])],
+    };
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin' },
+        body: JSON.stringify({ product: updated }),
+      });
+      if (res.ok) {
+        const list = await res.json();
+        setProducts(Array.isArray(list) ? list : products);
+        alert(`Image set for ${product.name}. The site will update right away.`);
+      } else {
+        alert('Failed to update product.');
+      }
+    } catch {
+      alert('Failed to update product.');
     }
     setAssigningToProduct(null);
   };

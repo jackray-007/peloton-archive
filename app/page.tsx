@@ -1,9 +1,11 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-import { getFeaturedProducts, products } from '@/lib/products';
+import { getFeaturedProducts } from '@/lib/products';
+import { Product } from '@/types';
 import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -11,8 +13,16 @@ import { useRecentlyViewed } from '@/contexts/RecentlyViewedContext';
 import ArchiveSeal from '@/components/logos/ArchiveSeal';
 
 export default function Home() {
-  const featuredProducts = getFeaturedProducts();
+  const [products, setProducts] = useState<Product[]>([]);
+  const featuredProducts = getFeaturedProducts(products);
   const { recentlyViewed } = useRecentlyViewed();
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => setProducts(Array.isArray(data) ? data : []))
+      .catch(() => setProducts([]));
+  }, []);
 
   return (
     <>

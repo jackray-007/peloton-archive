@@ -1,14 +1,18 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { products } from '@/lib/products';
+import { Product } from '@/types';
 import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Filter, X } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
-export default function ProductsContent() {
+interface ProductsContentProps {
+  initialProducts: Product[];
+}
+
+export default function ProductsContent({ initialProducts: products }: ProductsContentProps) {
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedTeam, setSelectedTeam] = useState<string>('all');

@@ -1,16 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Upload, X, Check, Image as ImageIcon, Lock, Search } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { products } from '@/lib/products';
+import { Product } from '@/types';
 
 export default function UploadPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<string>('');
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -18,13 +19,28 @@ export default function UploadPage() {
   const [errors, setErrors] = useState<string[]>([]);
   const [productSearch, setProductSearch] = useState('');
 
-  // Check authentication on mount
+  const loadProducts = useCallback(async () => {
+    try {
+      const res = await fetch('/api/products');
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(Array.isArray(data) ? data : []);
+      }
+    } catch {
+      setProducts([]);
+    }
+  }, []);
+
   useEffect(() => {
     const authStatus = sessionStorage.getItem('admin_authenticated');
     if (authStatus === 'true') {
       setAuthenticated(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (authenticated) loadProducts();
+  }, [authenticated, loadProducts]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +82,7 @@ export default function UploadPage() {
     }
 
     if (!selectedProduct) {
-      setErrors(['Please select a product']);
+      setErrors(['Please select a product to attach these images to.']);
       return;
     }
 
@@ -102,15 +118,28 @@ export default function UploadPage() {
 
     try {
       const results = await Promise.all(uploadPromises);
-      setUploaded(results.map(r => r.url));
-      
-      // Generate code snippet to update product
-      const product = products.find(p => p.id === selectedProduct);
       const imageUrls = results.map(r => r.url);
-      
-      // Show success with copyable code
+      setUploaded(imageUrls);
+
+      const product = products.find(p => p.id === selectedProduct);
+      if (product && imageUrls.length > 0) {
+        const updated = {
+          ...product,
+          image: imageUrls[0],
+          images: imageUrls,
+        };
+        const res = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-password': process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin' },
+          body: JSON.stringify({ product: updated }),
+        });
+        if (res.ok) {
+          const list = await res.json();
+          setProducts(Array.isArray(list) ? list : products);
+        }
+      }
       setFiles([]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       setErrors([error.message]);
     } finally {
       setUploading(false);
@@ -366,59 +395,44 @@ export default function UploadPage() {
                 )}
 
                 {/* Success Messages */}
-                {uploaded.length > 0 && selectedProductData && (
+                {uploaded.length > 0 && (
                   <div className="border border-black/20 bg-black/5 p-6">
                     <div className="flex items-center gap-2 mb-4">
                       <Check className="w-5 h-5 text-black" strokeWidth={1.5} />
                       <h3 className="text-sm font-light text-black tracking-tight uppercase">
-                        Upload Successful
+                        Upload successful
                       </h3>
                     </div>
-                    
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-xs font-light text-black/60 tracking-wider uppercase mb-2">
-                          Image URLs
-                        </p>
-                        <div className="space-y-2">
-                          {uploaded.map((url, index) => (
-                            <div key={index} className="flex items-center gap-3">
-                              <code className="flex-1 text-xs font-light text-black/60 tracking-tight bg-white px-2 py-1 border border-black/10">
-                                {url}
-                              </code>
-                              <button
-                                onClick={() => navigator.clipboard.writeText(url)}
-                                className="text-xs font-light text-black/40 hover:text-black tracking-tight uppercase border-b border-black/20 hover:border-black/40 transition-colors"
-                              >
-                                Copy
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="border-t border-black/10 pt-4">
-                        <p className="text-xs font-light text-black/60 tracking-wider uppercase mb-3">
-                          Update Product Code
-                        </p>
-                        <div className="bg-white border border-black/10 p-4">
-                          <p className="text-xs font-light text-black/40 tracking-tight mb-2">
-                            Copy this code and replace the image URLs in <code className="bg-black/5 px-1">lib/products.ts</code> for product ID {selectedProductData.id}:
-                          </p>
-                          <pre className="text-xs font-light text-black/70 tracking-tight overflow-x-auto">
-{`image: '${uploaded[0]}',${uploaded.length > 1 ? `\nimages: [\n  '${uploaded.join("',\n  '")}'\n],` : ''}`}
-                          </pre>
+                    {selectedProductData ? (
+                      <p className="text-sm font-light text-black/70 tracking-tight mb-4">
+                        Images are now set for <strong>{selectedProductData.name}</strong>. The site will show the new images right away.
+                      </p>
+                    ) : null}
+                    <div className="space-y-2">
+                      <p className="text-xs font-light text-black/60 tracking-wider uppercase">
+                        Image URL(s)
+                      </p>
+                      {uploaded.map((url, index) => (
+                        <div key={index} className="flex items-center gap-3">
+                          <code className="flex-1 text-xs font-light text-black/60 tracking-tight bg-white px-2 py-1 border border-black/10 truncate">
+                            {url}
+                          </code>
                           <button
-                            onClick={() => {
-                              const code = `image: '${uploaded[0]}',${uploaded.length > 1 ? `\nimages: [\n  '${uploaded.join("',\n  '")}'\n],` : ''}`;
-                              navigator.clipboard.writeText(code);
-                            }}
-                            className="mt-3 text-xs font-light text-black/40 hover:text-black tracking-tight uppercase border-b border-black/20 hover:border-black/40 transition-colors"
+                            onClick={() => navigator.clipboard.writeText(url)}
+                            className="text-xs font-light text-black/40 hover:text-black tracking-tight uppercase border-b border-black/20 hover:border-black/40 transition-colors whitespace-nowrap"
                           >
-                            Copy Code
+                            Copy
                           </button>
                         </div>
-                      </div>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex gap-4">
+                      <Link
+                        href="/admin/products"
+                        className="text-xs font-light text-black/60 hover:text-black tracking-wider uppercase border-b border-black/20 hover:border-black/40 transition-colors"
+                      >
+                        Add or edit products →
+                      </Link>
                     </div>
                   </div>
                 )}
@@ -442,20 +456,17 @@ export default function UploadPage() {
                 {/* Instructions */}
                 <div className="border-t border-black/10 pt-8 mt-12">
                   <h3 className="text-xs font-light text-black/60 tracking-wider uppercase mb-4">
-                    How It Works
+                    How it works
                   </h3>
                   <div className="space-y-3 text-sm font-light text-black/70 tracking-tight leading-relaxed">
                     <p>
-                      <strong className="text-black">1. Select Product:</strong> Choose the product you want to upload images for from the list above.
+                      <strong className="text-black">1. Add a product (if needed):</strong> Go to <Link href="/admin/products" className="border-b border-black/30 hover:border-black">Products</Link> and click &quot;Add Product&quot; to create a new item. Fill in name, team, price, etc.
                     </p>
                     <p>
-                      <strong className="text-black">2. Upload Images:</strong> Select one or more images. They'll be automatically named with the product ID.
+                      <strong className="text-black">2. Select product:</strong> Choose the product above to attach photos to.
                     </p>
                     <p>
-                      <strong className="text-black">3. Copy Code:</strong> After upload, copy the generated code snippet and paste it into <code className="bg-black/5 px-1">lib/products.ts</code> to update the product's image URLs.
-                    </p>
-                    <p>
-                      <strong className="text-black">4. Save & Refresh:</strong> Save the file and refresh your browser to see the new images.
+                      <strong className="text-black">3. Upload images:</strong> Select one or more images and click Upload. The product will update on the site automatically—no code or copy/paste.
                     </p>
                   </div>
                 </div>

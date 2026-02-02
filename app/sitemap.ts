@@ -1,9 +1,10 @@
 import { MetadataRoute } from 'next';
-import { products } from '@/lib/products';
+import { getProducts } from '@/lib/products';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peloton-archive.vercel.app';
-  
+  const products = await getProducts();
+
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,

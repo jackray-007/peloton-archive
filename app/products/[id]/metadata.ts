@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getProductById } from '@/lib/products';
+import { getProductByIdAsync } from '@/lib/products';
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peloton-archive.vercel.app';
 
@@ -9,7 +9,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }> 
 }): Promise<Metadata> {
   const { id } = await params;
-  const product = getProductById(id);
+  const product = await getProductByIdAsync(id);
 
   if (!product) {
     return {

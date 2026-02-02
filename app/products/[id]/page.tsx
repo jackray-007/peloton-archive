@@ -1,14 +1,12 @@
 import Link from 'next/link';
-import { getProductById, products } from '@/lib/products';
+import { getProducts } from '@/lib/products';
 import ProductContent from './product-content';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-// Generate static params for all products for better SEO
 export async function generateStaticParams() {
-  return products.map((product) => ({
-    id: product.id,
-  }));
+  const products = await getProducts();
+  return products.map((product) => ({ id: product.id }));
 }
 
 export default async function ProductDetailPage({
@@ -17,7 +15,8 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = getProductById(id);
+  const products = await getProducts();
+  const product = products.find((p) => p.id === id);
 
   if (!product) {
     return (
@@ -40,5 +39,5 @@ export default async function ProductDetailPage({
     );
   }
 
-  return <ProductContent product={product} />;
+  return <ProductContent product={product} allProducts={products} />;
 }

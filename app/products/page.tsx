@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
+import { getProducts } from '@/lib/products';
 import ProductsContent from './products-content';
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peloton-archive.vercel.app';
@@ -76,10 +77,11 @@ function Loading() {
   );
 }
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const products = await getProducts();
   return (
     <Suspense fallback={<Loading />}>
-      <ProductsContent />
+      <ProductsContent initialProducts={products} />
     </Suspense>
   );
 }

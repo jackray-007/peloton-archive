@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { products } from '@/lib/products';
 import { Product } from '@/types';
 
 interface SearchModalProps {
@@ -15,6 +14,7 @@ interface SearchModalProps {
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -24,11 +24,16 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   }, [isOpen]);
 
   useEffect(() => {
+    if (isOpen && products.length === 0) {
+      fetch('/api/products').then((res) => (res.ok ? res.json() : [])).then((data) => setProducts(Array.isArray(data) ? data : []));
+    }
+  }, [isOpen, products.length]);
+
+  useEffect(() => {
     if (query.trim() === '') {
       setResults([]);
       return;
     }
-
     const searchTerm = query.toLowerCase();
     const filtered = products.filter(
       (product) =>
@@ -38,7 +43,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
         product.description.toLowerCase().includes(searchTerm)
     );
     setResults(filtered.slice(0, 8));
-  }, [query]);
+  }, [query, products]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {

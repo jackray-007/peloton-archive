@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { X, Trash2 } from 'lucide-react';
-import { products } from '@/lib/products';
 import { Product } from '@/types';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -16,9 +15,14 @@ export default function ComparePage() {
     const saved = localStorage.getItem('compareList');
     if (saved) {
       try {
-        const productIds = JSON.parse(saved);
-        const compared = productIds.map((id: string) => products.find((p: Product) => p.id === id)).filter(Boolean);
-        setCompareList(compared);
+        const productIds = JSON.parse(saved) as string[];
+        fetch('/api/products')
+          .then((res) => (res.ok ? res.json() : []))
+          .then((productsList: Product[]) => {
+            const compared = productIds.map((id) => productsList.find((p) => p.id === id)).filter(Boolean) as Product[];
+            setCompareList(compared);
+          })
+          .catch(() => {});
       } catch (e) {
         console.error('Error loading compare list:', e);
       }

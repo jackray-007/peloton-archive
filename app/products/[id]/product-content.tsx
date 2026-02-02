@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingCart, Heart, Check, Truck, Shield, ArrowLeft } from 'lucide-react';
-import { Product, getProductsByCategory } from '@/lib/products';
+import { Product } from '@/types';
+import { getProductsByCategory } from '@/lib/products';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProductReviews from '@/components/ProductReviews';
@@ -17,9 +18,10 @@ import { useRecentlyViewed } from '@/contexts/RecentlyViewedContext';
 
 interface ProductContentProps {
   product: Product;
+  allProducts?: Product[];
 }
 
-export default function ProductContent({ product }: ProductContentProps) {
+export default function ProductContent({ product, allProducts }: ProductContentProps) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
@@ -250,10 +252,10 @@ export default function ProductContent({ product }: ProductContentProps) {
                 )}
 
                 {/* Bundle Deal - Show for jerseys */}
-                {product.category === 'jersey' && (
+                {product.category === 'jersey' && allProducts && (
                   <div className="mt-8">
                     {(() => {
-                      const matchingBibs = getProductsByCategory('bibs').filter(p => p.team === product.team);
+                      const matchingBibs = getProductsByCategory('bibs', allProducts).filter(p => p.team === product.team);
                       if (matchingBibs.length > 0) {
                         return (
                           <BundleDeal
@@ -276,7 +278,7 @@ export default function ProductContent({ product }: ProductContentProps) {
 
             {/* Product Recommendations */}
             <section className="mt-24 pt-24 border-t border-black/10">
-              <ProductRecommendations currentProduct={product} />
+              <ProductRecommendations currentProduct={product} allProducts={allProducts} />
             </section>
           </div>
         </div>
